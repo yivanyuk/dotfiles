@@ -1,0 +1,8 @@
+{
+  "eslint.autoFixOnSave": true,
+  "diagnostic.checkCurrentLine": false,
+  "typescript.format.enabled": true,
+  "list.nextKeymap":"<C-n>",
+  "list.previousKeymap":"<C-p>",
+  "prettier.stylelintIntegration": true
+}

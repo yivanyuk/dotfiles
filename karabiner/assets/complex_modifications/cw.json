@@ -1,0 +1,28 @@
+{
+    "title": "Delete word",
+    "rules": [
+      {
+        "description": "Control w to option delet",
+        "manipulators": [
+          {
+            "rules": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "w",
+                        "modifiers": {
+                            "mandatory": ["left_control"]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "delete_or_backspace"
+                        }
+                    ]
+                }
+            ]
+          }
+        ]
+      }
+    ]
+  }
