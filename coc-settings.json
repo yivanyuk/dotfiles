@@ -4,5 +4,7 @@
   "typescript.format.enabled": true,
   "list.nextKeymap":"<C-n>",
   "list.previousKeymap":"<C-p>",
-  "prettier.stylelintIntegration": true
+  "diagnostic.enableSign": true,
+  "prettier.useEditorConfig": true,
+  "suggest.noselect": true
 }

@@ -14,8 +14,8 @@ if !exists('g:vscode')
   " :NR open visual selection in sep window, my own fork which removes keybindings
   Plug 'yivanyuk/NrrwRgn'
 
-  " Auto-close parens / quotes, requires no config
-  Plug 'cohama/lexima.vim'
+  " Auto-close parens / quotes
+  Plug 'jiangmiao/auto-pairs'
 
   " vim and tmux easy navigation
   Plug 'christoomey/vim-tmux-navigator'
@@ -29,6 +29,9 @@ if !exists('g:vscode')
 
   " Toggle comments and more
   Plug 'tpope/vim-commentary'
+
+  " dim inactive buffer
+  Plug 'sunjon/shade.nvim'
 
   " Use . to repeat plugin operations (especially tpope stuff)
   Plug 'tpope/vim-repeat'
@@ -60,15 +63,17 @@ if !exists('g:vscode')
   " Plug 'hrsh7th/nvim-compe'
   " Plug 'glepnir/lspsaga.nvim'
 
-  "Coc
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+  Plug 'akinsho/toggleterm.nvim'
   " plenary required for some lua plugins (gitsigns)
   Plug 'nvim-lua/plenary.nvim'
 
   " Git
   Plug 'tpope/vim-fugitive'
   Plug 'lewis6991/gitsigns.nvim'
+
+  Plug 'jparise/vim-graphql'
 
   " File tree
   Plug 'scrooloose/nerdtree'
@@ -77,10 +82,26 @@ if !exists('g:vscode')
   Plug 'matze/vim-move'
 
 " lua line
-  Plug 'hoob3rt/lualine.nvim'
-  Plug 'kyazdani42/nvim-web-devicons'
+  Plug 'nvim-lualine/lualine.nvim'
 
   Plug 'tjdevries/colorbuddy.vim'
+
+  " needed for some lua themes
+  Plug 'rktjmp/lush.nvim'
+
+  " vim kitty navigator
+  Plug 'knubie/vim-kitty-navigator', {'do': 'cp ./*.py ~/.config/kitty/'}
+
+  " telescope
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+
+  " pretty icons
+  Plug 'kyazdani42/nvim-web-devicons'
+
+  " diagnostic inline
+  Plug 'folke/trouble.nvim'
 
   " Colorschemes
   Plug 'Th3Whit3Wolf/onebuddy'
@@ -88,9 +109,8 @@ if !exists('g:vscode')
   Plug 'arcticicestudio/nord-vim'
   Plug 'romainl/flattened'
   Plug 'morhetz/gruvbox'
-  Plug 'romainl/Apprentice'
   Plug 'srcery-colors/srcery-vim'
-  Plug 'tomasiser/vim-code-dark'
+  Plug 'Mofiqul/vscode.nvim'
   Plug 'sainnhe/everforest'
   Plug 'sainnhe/sonokai'
   Plug 'bluz71/vim-moonfly-colors'
@@ -99,24 +119,46 @@ if !exists('g:vscode')
   Plug 'sainnhe/edge'
   Plug 'mhartington/oceanic-next'
   Plug 'marko-cerovac/material.nvim'
-  Plug 'lourenci/github-colors'
   Plug 'projekt0n/github-nvim-theme'
   Plug 'Th3Whit3Wolf/space-nvim'
   Plug 'andreypopp/vim-colors-plain'
   Plug 'mcchrish/zenbones.nvim'
   Plug 'sainnhe/gruvbox-material'
   Plug 'nelstrom/vim-mac-classic-theme'
+  Plug 'EdenEast/nightfox.nvim'
+  Plug 'savq/melange'
+  Plug 'adigitoleo/vim-mellow', { 'tag': '*' }
+  Plug 'mvanderkamp/cocoa.vim'
+  Plug 'kamwitsta/flatwhite-vim'
+  Plug 'kyazdani42/blue-moon'
+  Plug 'adisen99/apprentice.nvim'
+  Plug 'https://gitlab.com/protesilaos/tempus-themes-vim.git'
+  Plug 'cocopon/iceberg.vim'
+  Plug 'kyazdani42/blue-moon'
+  Plug 'Th3Whit3Wolf/spacebuddy'
+  Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+  Plug 'rose-pine/neovim'
+  Plug 'pbrisbin/vim-colors-off'
+  Plug 'rhcher/vim-paper'
+
 
   call plug#end()
 
+
+  set laststatus=3
+
   let g:material_style = 'deepocean'
+
+
+  let g:coc_node_path = '/Users/yivanyuk/.nvm/versions/node/v14.18.3/bin/node'
 
   " General config
   set termguicolors
   " let g:gruvbox_material_background = 'hard'
   " let g:github_theme_style = 'light_default'
   " let g:material_style = 'lighter'
-  colorscheme dracula
+  colorscheme nightfly
+
   filetype plugin indent on
   filetype plugin on
   syntax enable
@@ -132,6 +174,7 @@ if !exists('g:vscode')
   set hidden
   set ruler
   set number
+  set relativenumber
   set cursorline
   set smartcase
   set hlsearch
@@ -212,11 +255,13 @@ if !exists('g:vscode')
 
   nnoremap <Leader>w :w!<CR>
   nnoremap <Leader>q :q<CR>
+  nnoremap <Leader>Q :qa!<CR>
 
   nnoremap L $
   nnoremap H ^
 
   nnoremap <leader>s :%s/
+  nnoremap <leader>S yiw:%s/<C-r>0
 
   " center after search
   nnoremap n nzz
@@ -224,7 +269,8 @@ if !exists('g:vscode')
 
   nnoremap <silent><leader>; :noh<CR>
 
-  nnoremap <silent><leader>' :FixWhitespace<CR>
+  " clear white space and go back to where curor was
+  nnoremap <silent><leader>' mw:FixWhitespace<CR>`w
 
 
   " Copy and paste globally
@@ -249,6 +295,7 @@ if !exists('g:vscode')
   " edit config
   nmap <Leader>vi :e $MYVIMRC<CR>
   nmap <Leader>R :so $MYVIMRC<CR>
+  nmap <Leader>I :PlugInstall<CR>
 
   " prettify json
   nmap <Leader>js :set ft=json<CR>:CocCommand prettier.formatFile<CR>
@@ -256,11 +303,17 @@ if !exists('g:vscode')
   "run jest
   nmap <leader>J :sp <Bar> term TZ=UTC jest --coverage=false %<CR>
 
-  "run jest
-  nmap <leader>N :sp <Bar> term node %<CR>
+  "copy entire buffer to register l and paste into node
+  nmap <silent><leader>N gg"lyG:sp <Bar> term node -e "<C-r>l"<CR>
 
   " delete buffer ( usually after running jest )
   nmap <leader>D :bd!<CR>
+
+  nmap <leader>j 10j
+  nmap <leader>k 10k
+
+  imap <C-Space>l console.log('----------  ----------')<Esc>12hi
+  imap <C-Space>j console.log(JSON.stringify(,null,2))<Esc>8hi
 
   " git
   nmap <Leader>gb :Git blame<CR>
@@ -268,8 +321,9 @@ if !exists('g:vscode')
   nmap <Leader>gn :Gitsigns next_hunk<CR>
   nmap <Leader>gp :Gitsigns prev_hunk<CR>
   nmap <Leader>gu :Gitsigns reset_hunk<CR>
-
-  " " window / pane
+  " open git changes in quickfix
+  nmap <Leader>GD :Git! difftool<CR> 
+  " window / pane
   " nmap <C-l> <C-w>l
   " nmap <C-k> <C-w>k
   " nmap <C-j> <C-w>j
@@ -281,36 +335,61 @@ if !exists('g:vscode')
   nnoremap <Left> <C-w><
   nnoremap <Right> <C-w>>
 
-  "vim move
+  " toggle term
+  if has("gui_running")
+    nnoremap <C-z> :ToggleTerm<CR>
+    tnoremap <C-z> <C-\><C-n>:ToggleTerm<CR>
+  endif
+
+  " vim move
+
   vmap ∆ <Plug>MoveBlockDown
   vmap ˚ <Plug>MoveBlockUp
   nmap ∆ <Plug>MoveLineDown
   nmap ˚ <Plug>MoveLineUp
+
+  omap L $
+  omap H ^
   " }}}
 
   let NERDTreeMinimalUI=1
 
   " FZF {{{
   nmap <leader>f :GFiles<cr>|     " fuzzy find files in the working directory (where you launched Vim from) /gfiles ignores gitignore folders
-  nmap <leader>F :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
+  " nmap <leader>F :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
   nmap <leader>/ :Lines<cr>|    " fuzzy find lines in all open buffers
   nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
   nmap <leader>r :Rg |           " fuzzy find text in the working directory
-  nmap <leader>C :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
+  " nmap <leader>C :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
+  " }}}
+
+  " Telescope {{{
+    " nmap <leader>f :Telescope find_files <CR>
+  " nmap <leader>r :Telescope live_grep<CR>
+
   " }}}
 
   " Coc {{{
+  "
+  " Use tab for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"" " use <tab> for trigger completion and navigate to the next complete item
+  " function! s:check_back_space() abort
+  "   let col = col('.') - 1
+  "   return !col || getline('.')[col - 1]  =~ '\s'
+  " endfunction
 
-  " use <tab> for trigger completion and navigate to the next complete item
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-  endfunction
-
-  inoremap <silent><expr> <Tab>
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<Tab>" :
-        \ coc#refresh()
+  " inoremap <silent><expr> <Tab>
+  "       \ pumvisible() ? "\<C-n>" :
+  "       \ <SID>check_back_space() ? "\<Tab>" :
+  "       \ coc#refresh()
 
   " }}}
 
@@ -329,8 +408,10 @@ if !exists('g:vscode')
   " GoTo code navigation.
   nmap <silent> gd <Plug>(coc-definition)
   nmap <silent> gy <Plug>(coc-type-definition)
-  nmap <silent> gi <Plug>(coc-implementation)
+  " nmap <silent> gi <Plug>(coc-implementation)
   nmap <silent> gr <Plug>(coc-references)
+
+  nmap <silent> <leader>a <Plug>(coc-codeaction-selected)
 
   " Use K to show documentation in preview window.
   nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -346,6 +427,7 @@ if !exists('g:vscode')
   endfunction
 
 
+  autocmd User TelescopePreviewerLoaded setlocal syntax off
 
   " Format code
   " autocmd BufWritePre *.js lua vim.lsp.buf.formatting_sync()
@@ -442,17 +524,84 @@ lua << EOF
     }
 }
 
+require("toggleterm").setup{}
+
+-- vim.g.catppuccin_flavour = "latte" -- latte, frappe, macchiato, mocha
+
+-- require("catppuccin").setup()
+-- local nightfox = require('nightfox')
+--
+-- -- This function set the configuration of nightfox. If a value is not passed in the setup function
+-- -- it will be taken from the default configuration above
+-- nightfox.setup({
+--   fox = "nightfox",
+--   alt_nc=true
+-- })
+--
+-- -- Load the configuration set above and apply the colorscheme
+-- nightfox.load()
+
 require('gitsigns').setup()
  require('lualine').setup({
    extensions = {'nerdtree'},
-   options = { theme = 'dracula' },
+   options = { theme = 'nightfly' },
+   -- options = { theme = 'vscode' },
    sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
-    lualine_c = {{ 'filename', path=1  }, 'diff'},
-    lualine_x = {'encoding', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
+    lualine_c = {{ 'filename', path=1 }},
+    lualine_x = {'fileformat', 'filetype'},
+    lualine_y = {'location'},
+    lualine_z = {'diff'}
   }
  })
+
+require('shade').setup({
+  overlay_opacity= 80,
+  opacity_step=1
+})
+ 
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+
+  local actions = require("telescope.actions")
+ require('telescope').setup{
+  defaults = {
+    -- Default configuration for telescope goes here:
+    -- config_key = value,
+    mappings = {
+      i = {
+        ["<esc>"] = actions.close,
+        ["<C-h>"] = "which_key"
+      }
+    }
+  },
+  pickers = {
+    -- Default configuration for builtin pickers goes here:
+    -- picker_name = {
+    --   picker_config_key = value,
+    --   ...
+    -- }
+    -- Now the picker_config_key will be applied every time you call this
+    -- builtin picker
+  },
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true,  -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+    }
+    -- Your extension configuration goes here:
+    -- extension_name = {
+    --   extension_config_key = value,
+    -- }
+    -- please take a look at the readme of the extension you want to configure
+  }
+}
+require('telescope').load_extension('fzf')
+-- coc tab completion
 EOF
