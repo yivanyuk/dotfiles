@@ -1,6 +1,6 @@
 {
   "eslint.autoFixOnSave": true,
-  "diagnostic.checkCurrentLine": false,
+  "diagnostic.checkCurrentLine": true,
   "typescript.format.enabled": true,
   "list.nextKeymap":"<C-n>",
   "list.previousKeymap":"<C-p>",

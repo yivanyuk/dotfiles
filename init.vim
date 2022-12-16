@@ -103,6 +103,8 @@ if !exists('g:vscode')
   " diagnostic inline
   Plug 'folke/trouble.nvim'
 
+  Plug 'mbbill/undotree'
+
   " Colorschemes
   Plug 'Th3Whit3Wolf/onebuddy'
   Plug 'dracula/vim'
@@ -150,7 +152,7 @@ if !exists('g:vscode')
   let g:material_style = 'deepocean'
 
 
-  let g:coc_node_path = '/Users/yivanyuk/.nvm/versions/node/v14.18.3/bin/node'
+  let g:coc_node_path = '/usr/local/bin/node'
 
   " General config
   set termguicolors
@@ -300,8 +302,11 @@ if !exists('g:vscode')
   " prettify json
   nmap <Leader>js :set ft=json<CR>:CocCommand prettier.formatFile<CR>
 
+  " run prettier
+  nmap gpf :CocCommand prettier.formatFile<CR>
+
   "run jest
-  nmap <leader>J :sp <Bar> term TZ=UTC jest --coverage=false %<CR>
+  nmap <leader>J :sp <Bar> term DEBUG_PRINT_LIMIT=100000 TZ=UTC npx jest --coverage=false %<CR>
 
   "copy entire buffer to register l and paste into node
   nmap <silent><leader>N gg"lyG:sp <Bar> term node -e "<C-r>l"<CR>
@@ -376,10 +381,16 @@ if !exists('g:vscode')
 " no select by `"suggest.noselect": true` in your configuration file.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
       \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
+
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"" " use <tab> for trigger completion and navigate to the next complete item
   " function! s:check_back_space() abort
   "   let col = col('.') - 1
