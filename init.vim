@@ -11,14 +11,14 @@ if !exists('g:vscode')
   " Can also do parallel editing of matches on tags
   Plug 'andymass/vim-matchup'
 
-  " :NR open visual selection in sep window, my own fork which removes keybindings
-  Plug 'yivanyuk/NrrwRgn'
-
   " Auto-close parens / quotes
   Plug 'jiangmiao/auto-pairs'
 
   " vim and tmux easy navigation
   Plug 'christoomey/vim-tmux-navigator'
+
+ " easy center screen
+  Plug 'shortcuts/no-neck-pain.nvim', { 'tag': '*' }
 
   " Readline-style keybindings everywhere (e.g. <C-a> for beginning of line)
   Plug 'tpope/vim-rsi'
@@ -30,22 +30,11 @@ if !exists('g:vscode')
   " Toggle comments and more
   Plug 'tpope/vim-commentary'
 
-  " dim inactive buffer
-  Plug 'sunjon/shade.nvim'
-
   " Use . to repeat plugin operations (especially tpope stuff)
   Plug 'tpope/vim-repeat'
 
   " Show trailing whitespace
   Plug 'bronson/vim-trailing-whitespace'
-
-  " Automatically clear search highlights after you move your cursor.
-  " Plug 'haya14busa/is.vim'
-
-  " Unobtrusive scratch window
-  " gs to open scratch window (works w/ selection)
-  Plug 'mtth/scratch.vim'
-  " :Scratch opens blank scratch window
 
   ""/apps/home/eng/config/credentials.json" Fzf is life
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -57,11 +46,6 @@ if !exists('g:vscode')
 
   " show buffers at top
   " Plug 'akinsho/bufferline.nvim'
-
-  " Language server setup
-  " Plug 'neovim/nvim-lspconfig'
-  " Plug 'hrsh7th/nvim-compe'
-  " Plug 'glepnir/lspsaga.nvim'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -99,9 +83,6 @@ if !exists('g:vscode')
 
   " pretty icons
   Plug 'kyazdani42/nvim-web-devicons'
-
-  " diagnostic inline
-  Plug 'folke/trouble.nvim'
 
   Plug 'mbbill/undotree'
 
@@ -142,23 +123,24 @@ if !exists('g:vscode')
   Plug 'rose-pine/neovim'
   Plug 'pbrisbin/vim-colors-off'
   Plug 'rhcher/vim-paper'
+  Plug 'yorik1984/newpaper.nvim'
+  Plug 'noahfrederick/vim-hemisu'
+  Plug 'rafamadriz/neon'
+  Plug 'nyoom-engineering/oxocarbon.nvim'
+  Plug 'luisiacc/gruvbox-baby'
 
 
   call plug#end()
 
+  " notational fzf
+  let g:nv_search_paths = ['~/notes']
+  set laststatus=2
 
-  set laststatus=3
-
-  let g:material_style = 'deepocean'
-
-
-  let g:coc_node_path = '/usr/local/bin/node'
+  " let g:coc_node_path = '/usr/local/bin/node'
+  let g:coc_node_path = '/Users/yivanyuk/.nvm/versions/node/v16.19.1/bin/node'
 
   " General config
   set termguicolors
-  " let g:gruvbox_material_background = 'hard'
-  " let g:github_theme_style = 'light_default'
-  " let g:material_style = 'lighter'
   colorscheme nightfly
 
   filetype plugin indent on
@@ -190,7 +172,6 @@ if !exists('g:vscode')
   set smartindent     " smarter indent for C-like languages
   set shiftwidth=2    " when reading, tabs are 2 spaces
   set softtabstop=2   " in insert mode, tabs are 2 spaces
-
 
   "persist undo history across sessions
   set undofile
@@ -238,6 +219,12 @@ if !exists('g:vscode')
   set splitbelow
   set splitright
 
+  " fade inactive windows vimade
+  let g:vimade = {
+  \ "fadelevel": 0.8,
+  \ "enabletreesitter": 1,
+  \}
+
   " Mappings {{{
   let mapleader=" "
 
@@ -262,6 +249,9 @@ if !exists('g:vscode')
   nnoremap L $
   nnoremap H ^
 
+  nnoremap j gj
+  nnoremap k gk
+
   nnoremap <leader>s :%s/
   nnoremap <leader>S yiw:%s/<C-r>0
 
@@ -273,6 +263,7 @@ if !exists('g:vscode')
 
   " clear white space and go back to where curor was
   nnoremap <silent><leader>' mw:FixWhitespace<CR>`w
+  " g:extra_whitespace_ignored_filetypes=['terminal', 'toggleterm', 'no']
 
 
   " Copy and paste globally
@@ -309,7 +300,7 @@ if !exists('g:vscode')
   nmap <leader>J :sp <Bar> term DEBUG_PRINT_LIMIT=100000 TZ=UTC npx jest --coverage=false %<CR>
 
   "copy entire buffer to register l and paste into node
-  nmap <silent><leader>N gg"lyG:sp <Bar> term node -e "<C-r>l"<CR>
+  " nmap <silent><leader>N gg"lyG:sp <Bar> term node -e "<C-r>l"<CR>
 
   " delete buffer ( usually after running jest )
   nmap <leader>D :bd!<CR>
@@ -327,7 +318,7 @@ if !exists('g:vscode')
   nmap <Leader>gp :Gitsigns prev_hunk<CR>
   nmap <Leader>gu :Gitsigns reset_hunk<CR>
   " open git changes in quickfix
-  nmap <Leader>GD :Git! difftool<CR> 
+  nmap <Leader>GD :Git! difftool<CR>
   " window / pane
   " nmap <C-l> <C-w>l
   " nmap <C-k> <C-w>k
@@ -344,6 +335,9 @@ if !exists('g:vscode')
   if has("gui_running")
     nnoremap <C-z> :ToggleTerm<CR>
     tnoremap <C-z> <C-\><C-n>:ToggleTerm<CR>
+  else
+    nnoremap <leader>tt :ToggleTerm<CR>
+    tnoremap <leader>tt <C-\><C-n>:ToggleTerm<CR>
   endif
 
   " vim move
@@ -361,12 +355,13 @@ if !exists('g:vscode')
 
   " FZF {{{
   nmap <leader>f :GFiles<cr>|     " fuzzy find files in the working directory (where you launched Vim from) /gfiles ignores gitignore folders
-  " nmap <leader>F :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
+  nmap <leader>F :Files<cr>|     " fuzzy find files in the working directory (where you launched Vim from)
   nmap <leader>/ :Lines<cr>|    " fuzzy find lines in all open buffers
   nmap <leader>b :Buffers<cr>|   " fuzzy find an open buffer
   nmap <leader>r :Rg |           " fuzzy find text in the working directory
+  " nmap <leader>N :NV<cr>|     " search notes
   " nmap <leader>C :Commands<cr>|  " fuzzy find Vim commands (like Ctrl-Shift-P in Sublime/Atom/VSC)
-  " }}}
+  
 
   " Telescope {{{
     " nmap <leader>f :Telescope find_files <CR>
@@ -381,6 +376,19 @@ if !exists('g:vscode')
 " no select by `"suggest.noselect": true` in your configuration file.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
+
+" inoremap <silent><expr> <TAB>
+"       \ coc#pum#visible() ? coc#_select_confirm() :
+"       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+"       \ CheckBackspace() ? "\<TAB>" :
+"       \ coc#refresh()
+
+" function! CheckBackspace() abort
+"   let col = col('.') - 1
+"   return !col || getline('.')[col - 1]  =~# '\s'
+" endfunction
+
+let g:coc_snippet_next = '<tab>'
 
 function! CheckBackspace() abort
   let col = col('.') - 1
@@ -415,6 +423,8 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"" " use <ta
 
   nmap <silent> <leader>ep <Plug>(coc-diagnostic-prev)
   nmap <silent> <leader>en <Plug>(coc-diagnostic-next)
+  nmap <silent> <leader>ee <Plug>(coc-diagnostic-info)
+  " nmap <silent> <leader>tt :call CocAction('diagnosticPreview')<CR>
 
   " GoTo code navigation.
   nmap <silent> gd <Plug>(coc-definition)
@@ -440,55 +450,12 @@ inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"" " use <ta
 
   autocmd User TelescopePreviewerLoaded setlocal syntax off
 
-  " Format code
-  " autocmd BufWritePre *.js lua vim.lsp.buf.formatting_sync()
-  " autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting_sync()
-  " autocmd BufWritePre *.ts lua vim.lsp.buf.formatting_sync()
-  " autocmd BufWritePre *.tsx lua vim.lsp.buf.formatting_sync()
-
-  " nvim compe {{{
-  " let g:compe = {}
-  " let g:compe.enabled = v:true
-  " let g:compe.autocomplete = v:true
-  " let g:compe.debug = v:false
-  " let g:compe.min_length = 1
-  " let g:compe.preselect = 'enable'
-  " let g:compe.throttle_time = 80
-  " let g:compe.source_timeout = 200
-  " let g:compe.resolve_timeout = 800
-  " let g:compe.incomplete_delay = 400
-  " let g:compe.max_abbr_width = 100
-  " let g:compe.max_kind_width = 100
-  " let g:compe.max_menu_width = 100
-  " let g:compe.documentation = v:true
-
-  " let g:compe.source = {}
-  " let g:compe.source.path = v:true
-  " let g:compe.source.buffer = v:true
-  " let g:compe.source.calc = v:true
-  " let g:compe.source.nvim_lsp = v:true
-  " let g:compe.source.nvim_lua = v:true
-  " let g:compe.source.vsnip = v:true
-  " let g:compe.source.ultisnips = v:true
-  " let g:compe.source.luasnip = v:true
-  " let g:compe.source.emoji = v:true
-  " " }}}
-
-
 endif
 
 " neovim 5 lsp setup
 lua << EOF
--- require'lspconfig'.tsserver.setup{}
--- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
---     vim.lsp.diagnostic.on_publish_diagnostics, {
---         virtual_text = false,
---         signs = true,
---         underline=true
---     }
--- )
  require'nvim-treesitter.configs'.setup {
- ensure_installed = {"javascript", "typescript", "css", "tsx", "scss", "lua", "json" },  -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+ ensure_installed = {"javascript", "typescript", "css", "tsx", "scss", "lua", "json", "vim" },  -- one of "all", "maintained" (parsers with maintainers), or a list of languages
  ignore_install = {  }, -- List of parsers to ignore installing
  highlight = {
    enable = true,              -- false will disable the whole extension
@@ -556,7 +523,6 @@ require('gitsigns').setup()
  require('lualine').setup({
    extensions = {'nerdtree'},
    options = { theme = 'nightfly' },
-   -- options = { theme = 'vscode' },
    sections = {
     lualine_a = {'mode'},
     lualine_b = {'branch'},
@@ -566,17 +532,6 @@ require('gitsigns').setup()
     lualine_z = {'diff'}
   }
  })
-
-require('shade').setup({
-  overlay_opacity= 80,
-  opacity_step=1
-})
- 
-  require("trouble").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
 
   local actions = require("telescope.actions")
  require('telescope').setup{
